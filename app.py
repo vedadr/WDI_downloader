@@ -22,10 +22,17 @@ handler.setFormatter(formatter)
 # add the handlers to the logger
 logger.addHandler(handler)
 
-limit_test = 10
-sleep_time = 3
-sleep_interval = 10
-cache_indicators = False
+with open('config.yml','r') as conf:
+    settings = yaml.load(conf)
+
+if settings['debug']:
+    limit_test = settings['limit_test']
+else:
+    limit_test = 99999
+
+sleep_time = settings['sleep_time']
+sleep_interval = settings['sleep_interval']
+cache_indicators = settings['cache_indicators']
 
 def main():
     sources = wbdata.get_source()
@@ -49,26 +56,20 @@ def main():
     df = df.pivot_table(columns = 'Indicator', values='Value', index=['FIPS', 'Place','Name','qName'] , aggfunc=max)
     df.to_csv("data_from_py.csv")
 
-def get_config(configFile):
-    with open(configFile,'r') as conf:
-        config = yaml.load(conf)
-    return config
-
 def get_preselected_indicators():
     preselected_indicators = []
     try:
-        preselected_indicators = pd.read_csv('C:/vedad/indicators_output.csv')
+        preselected_indicators = pd.read_csv(settings['indicators_loc'])
     except ValueError:
         logger.info("There's been an error while trying to open preselected indicators: {}".format(ValueError))
         return preselected_indicators
     return list(preselected_indicators['indicatorid'])
 
 def get_FIPS_codes():
-    creds = get_config('config.yml')
     # Create connection
-    con = pyodbc.connect(driver="{SQL Server}", server=creds['s'], database=creds['db'], uid=creds['u'], pwd=creds['p'])
+    con = pyodbc.connect(driver="{SQL Server}", server=settings['s'], database=settings['db'], uid=settings['u'], pwd=settings['p'])
     cur = con.cursor()
-    db_cmd = creds['query']
+    db_cmd = settings['query']
     cur.execute(db_cmd)
     res = [list(i) for i in cur.fetchall()]
     res_df = pd.DataFrame(data = res, columns=['Name', 'qName', 'FIPS'])
