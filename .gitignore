@@ -1,2 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
 /config.yml
+/log.log
+/data.pkl
+/data_from_py.csv

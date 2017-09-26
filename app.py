@@ -66,7 +66,7 @@ def get_preselected_indicators():
 def get_FIPS_codes():
     creds = get_config('config.yml')
     # Create connection
-    con = pyodbc.connect(driver="{SQL Server}", server='PRIME', database='WDI2015', uid=creds['u'], pwd=creds['p'])
+    con = pyodbc.connect(driver="{SQL Server}", server=creds['s'], database=creds['db'], uid=creds['u'], pwd=creds['p'])
     cur = con.cursor()
     db_cmd = "SELECT DISTINCT [name],[qname],[SL010_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL010] UNION ALL SELECT DISTINCT [name],[qname],[SL020_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL020] UNION ALL SELECT DISTINCT [name],[qname],[SL030_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL030] UNION ALL SELECT DISTINCT [name],[qname],[SL040_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL040] UNION ALL SELECT DISTINCT [name] ,[qname] ,[SL050_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL050] UNION ALL SELECT DISTINCT [name] ,[qname] ,[SL060_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL060] UNION ALL SELECT DISTINCT [name] ,[qname] ,[SL070_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL070] UNION ALL SELECT DISTINCT [name],[qname],[SL080_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL080] UNION ALL SELECT DISTINCT [name],[qname],[SL090_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL090] UNION ALL SELECT DISTINCT [name],[qname],[SL100_FIPS] FROM [WDI2015].[dbo].[_Names_WDI2015_SL100]  UNION ALL SELECT DISTINCT [name],[qname],[SL110_FIPS]FROM [WDI2015].[dbo].[_Names_WDI2015_SL110];"
     cur.execute(db_cmd)
